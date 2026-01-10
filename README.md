@@ -1,2 +1,2 @@
 # Syntax_Error_Project
-Welcome to our project! Our main goal is to create a website!
+A web browser for finding NFZ medical appointment dates in Poland. Utilizes the _Terminy Leczenia_ Open Data API to help patients find the earliest open slots for specialists, procedures, and hospital admissions.
