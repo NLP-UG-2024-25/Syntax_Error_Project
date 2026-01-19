@@ -18,5 +18,45 @@
 </head>
 <body>
     <h1>Wyszukiwarka terminów na NFZ</h1>
+    
+    <!-- search-form -->
+    <div class="search-form">
+        <select class="form-select">
+            <option value="" disabled selected>Wybierz województwo</option>
+            <option value="dolnoslaskie">Dolnośląskie</option>
+            <option value="kujawsko-pomorskie">Kujawsko-Pomorskie</option>
+            <option value="lubelskie">Lubelskie</option>
+            <option value="lubuskie">Lubuskie</option>
+            <option value="lodzkie">Łódzkie</option>
+            <option value="malopolskie">Małopolskie</option>
+            <option value="mazowieckie">Mazowieckie</option>
+            <option value="opolskie">Opolskie</option>
+            <option value="podkarpackie">Podkarpackie</option>
+            <option value="podlaskie">Podlaskie</option>
+            <option value="pomorskie">Pomorskie</option>
+            <option value="slaskie">Śląskie</option>
+            <option value="swietokrzyskie">Świętokrzyskie</option>
+            <option value="warminsko-mazurskie">Warmińsko-Mazurskie</option>
+            <option value="wielkopolskie">Wielkopolskie</option>
+            <option value="zachodniopomorskie">Zachodniopomorskie</option>
+        </select>
+
+        <input type="text" class="form-input" placeholder="Specjalista (np. Kardiolog)">
+
+        <input type="text" class="form-input" placeholder="Miejscowość">
+
+        <div class="priority">
+            <div class="priority-option">
+                <input type="radio" name="tryb" id="stabilny" checked>
+                <label for="stabilny">Stabilny</label>
+            </div>
+            <div class="priority-option">
+                <input type="radio" name="tryb" id="pilny">
+                <label for="pilny">Pilny</label>
+            </div>
+        </div>
+
+        <button class="btn-search">Szukaj terminów</button>
+    </div>
 </body>
 </html>
