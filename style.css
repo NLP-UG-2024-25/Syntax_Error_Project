@@ -21,13 +21,114 @@ body {
   
   /* centrowanie */
   display: flex;
+  flex-direction: column;
   justify-content: center; /* Poziomo */
   align-items: center;     /* Pionowo */
+  padding: 20px;
 }
 
 h1 {
   color: var(--text-dark);
   font-size: 2rem;        
   text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 1px 2px rgba(255, 255, 255,0.5);
+}
 
+.search-form {
+  background: var(--glas-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  padding:2.5rem;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 450px;
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+}
+
+/* pola select i input*/
+.form-select,
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  background-color: var(--input-bg);
+  font-size: 1rem;
+  color: var(--text-dark);
+  outline: none; 
+  transition: 0.3s;
+}
+
+/*efekt po kliknieciu w pole*/
+.form-select:focus,
+.form-input:focus {
+  background-color: #fff; /* robi sie biale */
+  box-shadow: 0 0 0 3px rgba(122, 165, 235, 0.3); /* niebieska poswiata */
+}
+
+/* stabilny i pilny*/
+.priority {
+  display: flex;
+  background-color: #cbd5e1;
+  padding: 4px;
+  border-radius: 50px;
+  margin-top: 5px;
+}
+
+.priority-option {
+  flex: 1;
+  position: relative;
+}
+
+.priority-option input[type="radio"] {
+  display: none;
+}
+
+/*stylizacja napisow*/
+.priority-option label {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.3s ease;
+}
+
+/*przelacznik zmienia kolor*/
+.priority-option input:checked + label {
+  background-color: white;
+  color: var(--text-dark);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/*search button*/
+.btn-search {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 16px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-search:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-search:active {
+  transform: scale(0.98);
 }
