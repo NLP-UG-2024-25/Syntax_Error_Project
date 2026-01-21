@@ -5,6 +5,10 @@
   --bg-gradient-top: #a3c9ff;    /* góra: niebieski */
   --bg-gradient-bottom: #f0f6ff; /* dół: brudny biały */
   --text-dark: #333;             /* ciemny kolor tekstu */
+  --input-bg: #f8f9fa;         /* jasne tło pól */
+  --primary-blue: #89b1f3;     /* kolor przycisku */
+  --primary-hover: #7aa5eb;    /* kolor przycisku po najechaniu */
+  --glas-bg: rgba(255, 255, 255, 0.5); /* tło formularza */
 }
 
 * {
@@ -58,9 +62,10 @@ h1 {
 .form-input {
   width: 100%;
   padding: 14px 16px;
-  border: none;
-  border-radius: 12px;
+ border: 1px solid rgba(0, 0, 0, 0.05); 
   background-color: var(--input-bg);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); 
+  border-radius: 12px;
   font-size: 1rem;
   color: var(--text-dark);
   outline: none; 
@@ -117,12 +122,13 @@ h1 {
   color: white;
   padding: 16px;
   border: none;
-  border-radius: 50px;
+  border-radius: 50px; 
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   margin-top: 10px;
-  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 4px 15px rgba(137, 177, 243, 0.4); /*cień pod przyciskiem*/
+  transition: all 0.3s ease;
 }
 
 .btn-search:hover {
