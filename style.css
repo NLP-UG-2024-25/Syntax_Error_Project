@@ -196,3 +196,60 @@ h1 {
 .btn-search:active {
   transform: scale(0.98);
 }
+
+body.dark {
+  --bg-gradient-top: #1f315a;
+  --bg-gradient-bottom: #020617;
+  --text-dark: #e2e8f0;
+  --input-bg: #1e293b;
+  --primary-blue: #3b82f6;
+  --primary-hover: #2563eb;
+  --glas-bg: rgba(30, 41, 59, 0.6);
+}
+
+#theme-toggle {
+  position: fixed;        /* 🔥 przyklejony do ekranu */
+  bottom: 25px;           /* odstęp od dołu */
+  right: 25px;            /* odstęp od prawej */
+
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;     /* kółko */
+
+  font-size: 1.5rem;      /* większa ikonka */
+  
+  border: none;
+  cursor: pointer;
+
+  background: var(--primary-blue);
+  color: white;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#theme-toggle:hover {
+  transform: scale(1.1);
+  background: var(--primary-hover);
+}
+
+#theme-toggle:active {
+  transform: scale(0.95);
+}
+
+body.dark .priority {
+  background-color: #0f172a;
+}
+
+body.dark .priority-option label {
+  color: #94a3b8;
+}
+
+body.dark .priority-option input:checked + label {
+  background-color: #3b82f6; /* niebieski akcent */
+  color: white;
+}
