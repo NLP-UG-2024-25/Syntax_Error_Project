@@ -333,7 +333,7 @@ h1 {
     align-items: flex-start;
   }
 }
-=======
+
 body.dark {
   --bg-gradient-top: #1f315a;
   --bg-gradient-bottom: #020617;
@@ -390,8 +390,7 @@ body.dark .priority-option input:checked + label {
   background-color: #3b82f6; /* niebieski akcent */
   color: white;
 }
-<<<<<<< HEAD
-.input-wrapper {
+
     position: relative;
     width: 100%;
 }
@@ -438,6 +437,3 @@ body.dark .priority-option input:checked + label {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
-=======
-main
->>>>>>> 9559131c80190d66196db2092fe897477a59cb57
