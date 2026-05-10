@@ -21,3 +21,34 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 updateIcon();
+
+document.addEventListener("DOMContentLoaded", () => {
+    getDeviceLocation();
+});
+
+function getDeviceLocation() {
+    if (!navigator.geolocation) {
+        console.error("Geolokalizacja nie jest wspierana przez tę przeglądarkę.");
+        return;
+    }
+
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
+}
+
+function successCallback(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    
+    console.log(`Pobrano lokalizację: ${latitude}, ${longitude}`);
+    // Tutaj dodaj kod, który ma się wykonać po otrzymaniu współrzędnych
+}
+
+function errorCallback(error) {
+    console.warn(`Błąd geolokalizacji (${error.code}): ${error.message}`);
+}
