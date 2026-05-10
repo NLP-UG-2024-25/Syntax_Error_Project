@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki wyszukiwania - Terminy NFZ</title>
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+</head>
+<body class="results-body">
+    <nav class="top-nav">
+        <div class="logo">Terminy<b>NFZ</b></div>
+        <div class="nav-links">
+            <a href="#">Jak to działa?</a>
+            <a href="#">Kontakt</a>
+        </div>
+    </nav>
+
+    <main class="results-page">
+        <section class="results-header">
+            <div class="results-info">
+                <h1>WYNIKI DLA: Woj. Mazowieckie, Kardiolog, Warszawa, Stabilny</h1>
+            </div>
+            <a href="index.html" class="change-search-btn">Zmień wyszukiwanie</a>
+        </section>
+
+        <div class="results-content">
+            <aside class="filters-panel">
+                <h2>Filtry</h2>
+
+                <label for="region">Województwo</label>
+                <select id="region">
+                    <option>Woj. Mazowieckie</option>
+                </select>
+
+                <label for="date">Data</label>
+                <input type="date" id="date">
+
+                <label for="distance">Odległość</label>
+                <select id="distance">
+                    <option>Dowolna</option>
+                    <option>Do 5 km</option>
+                    <option>Do 10 km</option>
+                </select>
+
+                <label for="time">Godziny wizyt</label>
+                <input type="text" id="time" placeholder="np. 10:00 - 18:00">
+
+                <label for="specialization">Specjalizacja</label>
+                <select id="specialization">
+                    <option>Kardiologia</option>
+                </select>
+            </aside>
+
+            <section class="results-grid">
+                <article class="result-card">
+                    <h3>Placówka 1</h3>
+                    <p>ul. Przykładowa 1</p>
+                    <div class="term-box">
+                        <span>NAJBLIŻSZY TERMIN:</span>
+                        <strong>---</strong>
+                    </div>
+                    <button class="reserve-btn">Zobacz więcej</button>
+                    <p>Kardiologia dorosłych</p>
+                </article>
+
+                <article class="result-card">
+                    <h3>Placówka 2</h3>
+                    <p>ul. Przykładowa 2</p>
+                    <div class="term-box">
+                        <span>NAJBLIŻSZY TERMIN:</span>
+                        <strong>--</strong>
+                    </div>
+                    <button class="reserve-btn">Zobacz więcej</button>
+                    <p>Kardiologia dorosłych</p>
+                </article>
+
+                <article class="result-card">
+                    <h3>Placówka 3</h3>
+                    <p>ul. Przykładowa 3</p>
+                    <div class="term-box">
+                        <span>NAJBLIŻSZY TERMIN:</span>
+                        <strong>--</strong>
+                    </div>
+                    <button class="reserve-btn">Zobacz więcej</button>
+                    <p>Kardiologia dorosłych</p>
+                </article>
+
+                <article class="result-card">
+                    <h3>Placówka 4</h3>
+                    <p>ul. Przykładowa 4</p>
+                    <div class="term-box">
+                        <span>NAJBLIŻSZY TERMIN:</span>
+                        <strong>--</strong>
+                    </div>
+                    <button class="reserve-btn">Zobacz więcej</button>
+                    <p>Kardiologia dorosłych</p>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    <button id="theme-toggle">🌙</button>
+    <script src="script.js"></script>
+</body>
+</html>
