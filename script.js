@@ -19,22 +19,22 @@ updateIcon();
 //  MAPOWANIE WOJEWÓDZTW  (nazwa z selecta → kod NFZ)
 // =====================
 const PROVINCE_CODES = {
-  'dolnoslaskie':        '02',
-  'kujawsko-pomorskie':  '04',
-  'lubelskie':           '06',
-  'lubuskie':            '08',
-  'lodzkie':             '10',
-  'malopolskie':         '12',
-  'mazowieckie':         '14',
-  'opolskie':            '16',
-  'podkarpackie':        '18',
-  'podlaskie':           '20',
-  'pomorskie':           '22',
-  'slaskie':             '24',
-  'swietokrzyskie':      '26',
-  'warminsko-mazurskie': '28',
-  'wielkopolskie':       '30',
-  'zachodniopomorskie':  '32',
+  'dolnoslaskie':        '01',
+  'kujawsko-pomorskie':  '02',
+  'lubelskie':           '03',
+  'lubuskie':            '04',
+  'lodzkie':             '05',
+  'malopolskie':         '06',
+  'mazowieckie':         '07',
+  'opolskie':            '08',
+  'podkarpackie':        '09',
+  'podlaskie':           '10',
+  'pomorskie':           '11',
+  'slaskie':             '12',
+  'swietokrzyskie':      '13',
+  'warminsko-mazurskie': '14',
+  'wielkopolskie':       '15',
+  'zachodniopomorskie':  '16',
 };
  
 // =====================
@@ -144,13 +144,15 @@ async function fetchQueues(params, page = 1) {
   const provinceCode = PROVINCE_CODES[params.province] || params.province;
  
   const url = new URL('https://api.nfz.gov.pl/app-itl-api/queues');
-  url.searchParams.set('case',     params.caseType);
-  url.searchParams.set('province', provinceCode);
-  url.searchParams.set('benefit',  params.benefit);
-  url.searchParams.set('page',     page);
-  url.searchParams.set('limit',    12);
-  url.searchParams.set('format',   'json');
-  if (params.city) url.searchParams.set('locality', params.city);
+  // url.searchParams.set('case',     params.caseType);
+    url.searchParams.set('province', provinceCode);
+    url.searchParams.set('name', 'example');
+
+  // url.searchParams.set('benefit',  params.benefit);
+  // url.searchParams.set('page',     page);
+  // url.searchParams.set('limit',    12);
+  // url.searchParams.set('format',   'json');
+  // if (params.city) url.searchParams.set('locality', params.city);
  
   try {
     const res  = await fetch(url.toString());
