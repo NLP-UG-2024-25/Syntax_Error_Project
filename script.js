@@ -145,14 +145,13 @@ async function fetchQueues(params, page = 1) {
  
   const url = new URL('https://api.nfz.gov.pl/app-itl-api/queues');
   // url.searchParams.set('case',     params.caseType);
-    url.searchParams.set('province', provinceCode);
-    url.searchParams.set('name', 'example');
-
-  // url.searchParams.set('benefit',  params.benefit);
-  // url.searchParams.set('page',     page);
-  // url.searchParams.set('limit',    12);
-  // url.searchParams.set('format',   'json');
-  // if (params.city) url.searchParams.set('locality', params.city);
+   url.searchParams.set('province', provinceCode);
+   url.searchParams.set('name', 'example');
+   url.searchParams.set('benefit',  params.benefit);
+   url.searchParams.set('page',     page);
+   url.searchParams.set('limit',    12);
+   url.searchParams.set('format',   'json');
+   if (params.city) url.searchParams.set('locality', params.city);
  
   try {
     const res  = await fetch(url.toString());
