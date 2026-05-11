@@ -392,10 +392,11 @@ body.dark .priority-option input:checked + label {
 }
 
 footer {
-    text-align: center;      /* Środkuje tekst */
-    padding: 20px 0;         /* Dodaje trochę przestrzeni nad i pod tekstem */
-    width: 100%;             /* Stopka zajmuje całą szerokość */
-    background-color: #f8f9fa; /* (Opcjonalnie) Jasnoszare tło - możesz usunąć ten wiersz lub zmienić kolor */
-    color: #333;             /* (Opcjonalnie) Ciemnoszary kolor tekstu */
-    margin-top: 40px;        /* Odstęp od reszty strony powyżej */
+    background-color: #2c3e50; /* Ciemnoniebieski kolor podobny do tego ze zdjęcia */
+    color: #ffffff;            /* Biały tekst */
+    text-align: center;        /* Wyśrodkowanie */
+    padding: 40px 20px;        /* Dużo przestrzeni wewnątrz stopki (góra/dół i boki) */
+    width: 100%;
+    margin-top: 60px;          /* Odstęp od treści strony powyżej */
+    box-sizing: border-box;    /* Zapobiega powstawaniu paska przewijania w poziomie */
 }
