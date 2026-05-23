@@ -64,6 +64,11 @@ body {
   color: #5b8ad2;
 }
 
+.logo a {
+    text-decoration: none;
+    color: var(--text-dark); /* Upewnia się, że tekst zachowa ciemny kolor */
+}
+
 .nav-links a {
   text-decoration: none;
   color: var(--text-dark);
