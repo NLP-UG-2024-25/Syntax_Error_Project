@@ -33,6 +33,16 @@ body {
 
 .results-body {
   display: block;
+  padding-top: 0;
+}
+
+.results-body .top-nav {
+    position: relative;
+    padding: 20px 50px; 
+}
+
+.results-page {
+    padding-top: 20px; 
 }
 
 .top-nav {
