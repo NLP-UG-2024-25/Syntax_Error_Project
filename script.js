@@ -66,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     getDeviceLocation();
   }
  
-  // Jeśli jesteśmy na stronie wyników — uruchom wyszukiwanie
   if (document.querySelector('.results-grid')) {
     initResultsPage();
   }
