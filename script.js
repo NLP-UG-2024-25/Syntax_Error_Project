@@ -40,9 +40,10 @@ const PROVINCE_CODES = {
 // =====================
 //  STRONA GŁÓWNA  (index.html)
 // =====================
+const searchForm = document.querySelector('.search-form');
 const searchBtn = document.querySelector('.btn-search');
 
-// Funkcja wykonująca wyszukiwanie (wspólna dla kliknięcia i klawisza Enter)
+// Funkcja wykonująca wyszukiwanie
 function executeSearch() {
   const provinceSelect = document.querySelector('.form-select');
   const benefitInput   = document.querySelectorAll('.form-input')[0];
@@ -68,22 +69,21 @@ function executeSearch() {
   window.location.href = 'results.html';
 }
 
+// 1. Obsługa tradycyjnego kliknięcia myszką w przycisk
 if (searchBtn) {
-  // 1. Obsługa kliknięcia myszką w przycisk
   searchBtn.addEventListener('click', e => {
     e.preventDefault();
     executeSearch();
   });
+}
 
-  // 2. Obsługa klawisza Enter na polach formularza strony głównej
-  const formElements = document.querySelectorAll('.form-select, .form-input');
-  formElements.forEach(element => {
-    element.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        executeSearch();
-      }
-    });
+// 2. NOWOŚĆ: GLOBALNA OBSŁUGA ENTERA DLA CAŁEGO FORMULARZA
+if (searchForm) {
+  searchForm.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Zapobiegamy domyślnemu zachowaniu formularza
+      executeSearch();    // Wywołujemy wyszukiwanie
+    }
   });
 }
 
@@ -114,7 +114,6 @@ function getDeviceLocation() {
     cityInput.placeholder = 'Ustalanie lokalizacji... ⏳';
   }
 
-  // Konfiguracja sieciowa zapobiegająca błędowi "Timeout expired"
   const geoOptions = {
     enableHighAccuracy: false,
     timeout: 15000,
