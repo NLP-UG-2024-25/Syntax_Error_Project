@@ -37,31 +37,59 @@ const PROVINCE_CODES = {
   zachodniopomorskie: '16'
 };
 
+// =====================
+//  STRONA GŁÓWNA  (index.html)
+// =====================
 const searchBtn = document.querySelector('.btn-search');
+
+// Funkcja wykonująca wyszukiwanie (wspólna dla kliknięcia i klawisza Enter)
+function executeSearch() {
+  const provinceSelect = document.querySelector('.form-select');
+  const benefitInput   = document.querySelectorAll('.form-input')[0];
+  const cityInput      = document.getElementById('city-input');
+  const pilnyRadio     = document.getElementById('pilny');
+
+  const province = provinceSelect ? provinceSelect.value : '';
+  const benefit  = benefitInput ? benefitInput.value.trim() : '';
+  const city     = cityInput ? cityInput.value.trim() : '';
+  const caseType = (pilnyRadio && pilnyRadio.checked) ? '2' : '1';
+
+  if (!province) {
+    alert('Wybierz województwo.');
+    return;
+  }
+
+  if (!benefit) {
+    alert('Wpisz specjalistę.');
+    return;
+  }
+
+  localStorage.setItem('nfz_search', JSON.stringify({ province, benefit, city, caseType }));
+  window.location.href = 'results.html';
+}
+
 if (searchBtn) {
+  // 1. Obsługa kliknięcia myszką w przycisk
   searchBtn.addEventListener('click', e => {
     e.preventDefault();
+    executeSearch();
+  });
 
-    const province = document.querySelector('.form-select').value;
-    const benefit = document.querySelectorAll('.form-input')[0].value.trim();
-    const city = document.getElementById('city-input').value.trim();
-    const caseType = document.getElementById('pilny').checked ? '2' : '1';
-
-    if (!province) {
-      alert('Wybierz województwo.');
-      return;
-    }
-
-    if (!benefit) {
-      alert('Wpisz specjalistę.');
-      return;
-    }
-
-    localStorage.setItem('nfz_search', JSON.stringify({ province, benefit, city, caseType }));
-    window.location.href = 'results.html';
+  // 2. Obsługa klawisza Enter na polach formularza strony głównej
+  const formElements = document.querySelectorAll('.form-select, .form-input');
+  formElements.forEach(element => {
+    element.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        executeSearch();
+      }
+    });
   });
 }
 
+// =====================
+//  INICJALIZACJA STRON
+// =====================
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('city-input')) {
     getDeviceLocation();
@@ -72,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// =====================
+//  GEOLOKALIZACJA (OpenStreetMap Reverse Geocoding)
+// =====================
 function getDeviceLocation() {
   if (!navigator.geolocation) {
     console.error('Geolokalizacja nie jest wspierana przez tę przeglądarkę.');
@@ -80,9 +111,10 @@ function getDeviceLocation() {
 
   const cityInput = document.getElementById('city-input');
   if (cityInput) {
-    cityInput.placeholder = 'Ustalanie lokalizacji...';
+    cityInput.placeholder = 'Ustalanie lokalizacji... ⏳';
   }
 
+  // Konfiguracja sieciowa zapobiegająca błędowi "Timeout expired"
   const geoOptions = {
     enableHighAccuracy: false,
     timeout: 15000,
@@ -140,6 +172,9 @@ function getDeviceLocation() {
   );
 }
 
+// =====================
+//  STRONA WYNIKÓW  (results.html)
+// =====================
 function initResultsPage() {
   const raw = localStorage.getItem('nfz_search');
   if (!raw) {
