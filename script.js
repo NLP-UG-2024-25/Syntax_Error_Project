@@ -66,17 +66,76 @@ document.addEventListener('DOMContentLoaded', () => {
     getDeviceLocation();
   }
  
+  // Jeśli jesteśmy na stronie wyników — uruchom wyszukiwanie
   if (document.querySelector('.results-grid')) {
     initResultsPage();
   }
 });
  
 function getDeviceLocation() {
-  if (!navigator.geolocation) return;
+  if (!navigator.geolocation) {
+    console.error("Geolokalizacja nie jest wspierana przez tę przeglądarkę.");
+    return;
+  }
+
+  const cityInput = document.getElementById("city-input");
+  if (cityInput) {
+    cityInput.placeholder = "Ustalanie lokalizacji... ⏳";
+  }
+
   navigator.geolocation.getCurrentPosition(
-    (pos) => console.log(`Lokalizacja: ${pos.coords.latitude}, ${pos.coords.longitude}`),
-    (err) => console.warn(`Błąd geolokalizacji (${err.code}): ${err.message}`),
-    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      console.log(`Lokalizacja GPS: ${lat}, ${lon}`);
+      
+      // Budujemy adres URL do API Nominatim
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+      
+      // WYSOKIE BEZPIECZEŃSTWO: Dodajemy nagłówek User-Agent wymagany przez OpenStreetMap
+      fetch(url, {
+        method: 'GET',
+        headers: { 
+          'Accept-Language': 'pl',
+          'User-Agent': 'SyntaxErrorProjectNFZ/1.0 (kontakt: student@ug.edu.pl)' // Zapobiega blokowaniu przez serwer (Błąd 403)
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error(`Błąd sieci: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        console.log("Odpowiedź z API lokalizacji:", data);
+        if (data && data.address && cityInput) {
+          // Przeszukujemy strukturę odpowiedzi w poszukiwaniu nazwy miasta
+          const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
+          
+          if (city) {
+            cityInput.value = city; // <--- TUTAJ następuje automatyczne wpisanie miasta do pola
+            console.log(`Pomyślnie wpisano miasto: ${city}`);
+          } else {
+            cityInput.placeholder = "Nie wykryto nazwy miasta";
+          }
+        }
+      })
+      .catch(err => {
+        console.error("Błąd pobierania nazwy miasta z API Nominatim:", err);
+        if (cityInput) {
+          cityInput.placeholder = "Wpisz miejscowość ręcznie...";
+        }
+      });
+    },
+    (err) => {
+      console.warn(`Błąd systemu geolokalizacji (${err.code}): ${err.message}`);
+      if (cityInput) {
+        if (err.code === 1) {
+          cityInput.placeholder = "Odmowa dostępu do lokalizacji";
+        } else {
+          cityInput.placeholder = "Błąd lokalizacji (spróbuj wpisać ręcznie)";
+        }
+      }
+    },
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
   );
 }
  
