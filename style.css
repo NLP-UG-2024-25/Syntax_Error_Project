@@ -470,3 +470,13 @@ footer {
   margin-top: 100px;
    margin-bottom: calc(-50vw + 50%);    
 }
+
+.mailto-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.mailto-link:hover {
+  color: #0e2a53;
+  text-decoration: none;
+}
