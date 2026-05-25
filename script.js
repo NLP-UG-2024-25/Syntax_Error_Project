@@ -72,6 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
  
+// =====================
+//  GEOLOKALIZACJA (tylko index.html)
+// =====================
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('city-input')) {
+    getDeviceLocation();
+  }
+ 
+  // Jeśli jesteśmy na stronie wyników — uruchom wyszukiwanie
+  if (document.querySelector('.results-grid')) {
+    initResultsPage();
+  }
+});
+ 
 function getDeviceLocation() {
   if (!navigator.geolocation) {
     console.error("Geolokalizacja nie jest wspierana przez tę przeglądarkę.");
@@ -83,45 +97,52 @@ function getDeviceLocation() {
     cityInput.placeholder = "Ustalanie lokalizacji... ⏳";
   }
 
+  // Konfiguracja opcji naprawiająca błąd "Timeout expired" na komputerach stacjonarnych
+  const geoOptions = { 
+    enableHighAccuracy: false, // Używa szybkiej lokalizacji sieciowej (Wi-Fi/IP) zamiast wymuszania GPS
+    timeout: 15000,            // Zwiększony czas oczekiwania do 15 sekund
+    maximumAge: 60000          // Pozwala na użycie zbuforowanej pozycji sprzed maksymalnie minuty
+  };
+
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
       console.log(`Lokalizacja GPS: ${lat}, ${lon}`);
       
-      // Budujemy adres URL do API Nominatim
+      // Adres URL do darmowego API Nominatim (OpenStreetMap)
       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
       
-      // WYSOKIE BEZPIECZEŃSTWO: Dodajemy nagłówek User-Agent wymagany przez OpenStreetMap
+      // Pobieranie nazwy miejscowości z przekazaniem wymaganego nagłówka User-Agent
       fetch(url, {
         method: 'GET',
         headers: { 
           'Accept-Language': 'pl',
-          'User-Agent': 'SyntaxErrorProjectNFZ/1.0 (kontakt: student@ug.edu.pl)' // Zapobiega blokowaniu przez serwer (Błąd 403)
+          'User-Agent': 'SyntaxErrorProjectNFZ/1.0 (kontakt: student@ug.edu.pl)' // Zapobiega blokowaniu zapytania (Błąd 403)
         }
       })
       .then(res => {
-        if (!res.ok) throw new Error(`Błąd sieci: ${res.status}`);
+        if (!res.ok) throw new Error(`Błąd sieci API map: ${res.status}`);
         return res.json();
       })
       .then(data => {
         console.log("Odpowiedź z API lokalizacji:", data);
         if (data && data.address && cityInput) {
-          // Przeszukujemy strukturę odpowiedzi w poszukiwaniu nazwy miasta
+          // Przeszukiwanie pól adresowych w zależności od wielkości miejscowości
           const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
           
           if (city) {
-            cityInput.value = city; // <--- TUTAJ następuje automatyczne wpisanie miasta do pola
+            cityInput.value = city; // <--- Automatyczne wpisanie miasta do Twojego pola formularza
             console.log(`Pomyślnie wpisano miasto: ${city}`);
           } else {
-            cityInput.placeholder = "Nie wykryto nazwy miasta";
+            cityInput.placeholder = "Miejscowość";
           }
         }
       })
       .catch(err => {
         console.error("Błąd pobierania nazwy miasta z API Nominatim:", err);
         if (cityInput) {
-          cityInput.placeholder = "Wpisz miejscowość ręcznie...";
+          cityInput.placeholder = "Miejscowość";
         }
       });
     },
@@ -131,11 +152,11 @@ function getDeviceLocation() {
         if (err.code === 1) {
           cityInput.placeholder = "Odmowa dostępu do lokalizacji";
         } else {
-          cityInput.placeholder = "Błąd lokalizacji (spróbuj wpisać ręcznie)";
+          cityInput.placeholder = "Wpisz miejscowość ręcznie...";
         }
       }
     },
-    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    geoOptions
   );
 }
  
