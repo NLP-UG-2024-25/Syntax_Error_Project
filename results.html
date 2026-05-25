@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wyniki wyszukiwania - Terminy NFZ</title>
     <link rel="stylesheet" href="style.css">
- 
+
     <link rel="shortcut icon" href="favicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
- 
+
     <style>
         .loading-msg {
             grid-column: 1 / -1;
@@ -58,19 +58,19 @@
             <a href="#">Kontakt</a>
         </div>
     </nav>
- 
+
     <main class="results-page">
         <section class="results-header">
             <div class="results-info">
-                <h1>WYNIKI DLA: …</h1>
+                <h1>WYNIKI DLA: ...</h1>
             </div>
             <a href="index.html" class="change-search-btn">Zmień wyszukiwanie</a>
         </section>
- 
+
         <div class="results-content">
             <aside class="filters-panel">
                 <h2>Filtry</h2>
- 
+
                 <label for="filter-province">Województwo</label>
                 <select id="filter-province">
                     <option value="dolnoslaskie">Dolnośląskie</option>
@@ -90,23 +90,28 @@
                     <option value="wielkopolskie">Wielkopolskie</option>
                     <option value="zachodniopomorskie">Zachodniopomorskie</option>
                 </select>
- 
+
                 <label for="filter-benefit">Specjalista / świadczenie</label>
                 <input type="text" id="filter-benefit" placeholder="np. kardiolog">
- 
+
                 <label for="filter-city">Miejscowość</label>
                 <input type="text" id="filter-city" placeholder="np. Warszawa">
- 
-                <button id="apply-filters">🔍 Szukaj ponownie</button>
+
+                <button id="apply-filters">Szukaj ponownie</button>
             </aside>
- 
-            <!-- Karty wypełniane przez JS -->
-            <section class="results-grid">
-                <p class="loading-msg">Ładowanie…</p>
-            </section>
+
+            <div class="results-main">
+                <div id="pagination-top" class="pagination"></div>
+
+                <section class="results-grid">
+                    <p class="loading-msg">Ładowanie...</p>
+                </section>
+
+                <div id="pagination-bottom" class="pagination"></div>
+            </div>
         </div>
     </main>
- 
+
     <button id="theme-toggle">🌙</button>
     <script src="script.js"></script>
 </body>
