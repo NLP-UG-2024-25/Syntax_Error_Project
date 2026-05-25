@@ -240,11 +240,14 @@ function renderCards(data, grid) {
     const address = [attr.address, attr.place].filter(Boolean).join(', ') || '—';
     const city = attr.locality || '';
     const benefit = attr.benefit || '—';
-    const date = attr['first-available-date'] || null;
+    const firstAvailable = attr.dates || null;
     const waitDays = attr.statistics?.['provider-data']?.['average-period'] ?? null;
     const phone = attr.phone || null;
 
-    const dateStr = date ? formatDate(date) : '<span style="color:#aaa">brak danych</span>';
+    const dateStr =
+      firstAvailable?.applicable && firstAvailable?.date
+        ? formatDate(firstAvailable.date)
+        : '<span style="color:#aaa">brak danych</span>';
     const waitStr =
       waitDays !== null
         ? `<p class="wait-info">Śr. oczekiwanie: <strong>${waitDays} dni</strong></p>`
