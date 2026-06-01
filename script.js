@@ -222,7 +222,7 @@ function prefillFilters(params) {
   if (city) city.value = params.city || '';
 }
 
-async function fetchQueues(params, page = 1) {
+/* async function fetchQueues(params, page = 1) {
   const grid = document.querySelector('.results-grid');
   if (!grid) return;
 
@@ -254,6 +254,83 @@ async function fetchQueues(params, page = 1) {
     }
 
     renderCards(json.data, grid);
+    renderPagination(json.meta, params);
+  } catch (err) {
+    showError(`Nie udało się pobrać wyników. Sprawdź połączenie z internetem.<br><small>${err.message}</small>`);
+  }
+} */
+
+async function fetchQueues(params, page = 1) {
+  const grid = document.querySelector('.results-grid');
+  if (!grid) return;
+
+  grid.innerHTML = '<p class="loading-msg">Wyszukiwanie terminów...</p>';
+  clearPagination();
+
+  const provinceCode = PROVINCE_CODES[params.province] || params.province;
+  const url = new URL('https://api.nfz.gov.pl/app-itl-api/queues');
+
+  // Ustawianie parametrów API
+  url.searchParams.set('province', provinceCode);
+  url.searchParams.set('case', params.caseType); // 🔥 NAPRAWIONE: Teraz NFZ rozróżnia tryb Pilny/Stabilny
+  url.searchParams.set('benefit', params.benefit);
+  url.searchParams.set('page', page);
+  url.searchParams.set('limit', 12);
+  url.searchParams.set('format', 'json');
+  // Usunięto parametr 'name', który blokował wyniki wyszukiwania
+
+  if (params.city) {
+    url.searchParams.set('locality', params.city);
+  }
+
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const json = await res.json();
+    if (json.errors) {
+      showError(`API zwróciło błąd: ${json.errors[0]['errorr-reason']}`);
+      return;
+    }
+
+    if (!json.data || json.data.length === 0) {
+      renderCards(json.data, grid);
+      return;
+    }
+
+    // ==========================================
+    // 🔥 NOWOŚĆ: SORTOWANIE I FILTROWANIE PO DACIE
+    // ==========================================
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Resetujemy godzinę do północy dla dokładnego porównania
+
+    const sortedData = json.data
+      // 1. Opcjonalnie filtrujemy przeterminowane daty (jeśli API NFZ zwróci błąd cache)
+      .filter(item => {
+        const dateStr = item.attributes.dates?.date;
+        if (item.attributes.dates?.applicable && dateStr) {
+          const appointmentDate = new Date(dateStr);
+          appointmentDate.setHours(0, 0, 0, 0);
+          return appointmentDate >= today; // Zostawiamy tylko dzisiejsze i przyszłe terminy
+        }
+        return true; // Zostawiamy też placówki z "brak danych", przeniesiemy je na koniec
+      })
+      // 2. Sortujemy od najbliższego terminu do najdalszego
+      .sort((a, b) => {
+        const dateAStr = a.attributes.dates?.applicable ? a.attributes.dates?.date : null;
+        const dateBStr = b.attributes.dates?.applicable ? b.attributes.dates?.date : null;
+
+        const dateA = dateAStr ? new Date(dateAStr) : null;
+        const dateB = dateBStr ? new Date(dateBStr) : null;
+
+        if (dateA && dateB) return dateA - dateB; // Wcześniejsza data (najbliższa) ląduje wyżej
+        if (dateA) return -1;                     // Jeśli tylko 'a' ma datę, trafia wyżej niż 'b'
+        if (dateB) return 1;                      // Jeśli tylko 'b' ma datę, trafia wyżej niż 'a'
+        return 0;                                 // Jeśli obie placówki nie mają daty, zachowują kolejność
+      });
+
+    // Renderujemy posegregowane karty
+    renderCards(sortedData, grid);
     renderPagination(json.meta, params);
   } catch (err) {
     showError(`Nie udało się pobrać wyników. Sprawdź połączenie z internetem.<br><small>${err.message}</small>`);
