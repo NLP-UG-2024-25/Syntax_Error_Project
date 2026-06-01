@@ -15,7 +15,12 @@
 
 <link rel="manifest" href="site.webmanifest">
 </head>
-<body class="home-page">
+<body class="home-page">    
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+    </script>
     <nav class="top-nav">
         <div class="logo">Terminy<b>NFZ</b></div>
         <div class="nav-links">
@@ -55,7 +60,17 @@
             <option value="zachodniopomorskie">Zachodniopomorskie</option>
         </select>
 
-        <input type="text" class="form-input" placeholder="Specjalista (np. Kardiolog)">
+        <div class="autocomplete-wrapper">
+        <input 
+            type="text" 
+            id="benefit-input"
+            class="form-input" 
+            placeholder="Specjalista (np. Kardiolog)"
+            autocomplete="off"
+        >
+
+        <div id="suggestions-box" class="suggestions-box"></div>
+        </div>
 
         <input type="text" id="city-input" class="form-input" placeholder="Miejscowość">
 
@@ -73,11 +88,13 @@
         <a href="#" class="btn-search">Szukaj terminów</a>
     </div>
     <button id="theme-toggle">🌙</button>
+
+    <footer id="footer">
+        <p>Projekt grupy Syntax Error Crew 2026</p>
+        <p>Dane pochodzą z API: <a href="https://api.nfz.gov.pl/" target="_blank">api.nfz.gov.pl</a></p>
+        <p><a href="mailto:filologiapjn2024@gmail.com?subject=Zgłoszenie-TerminyNFZ" class="mailto-link">Zgłoś uwagę</a></p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
-<footer id="footer">
-    <p>Projekt grupy Syntax Error Crew 2026</p>
-    <p>Dane pochodzą z API: <a href="https://api.nfz.gov.pl/" target="_blank">api.nfz.gov.pl</a></p>
-    <p><a href="mailto:filologiapjn2024@gmail.com?subject=Zgłoszenie-TerminyNFZ" class="mailto-link">Zgłoś uwagę</a></p>
-</footer>
 </html>

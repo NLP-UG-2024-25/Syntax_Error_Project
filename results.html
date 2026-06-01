@@ -51,6 +51,11 @@
     </style>
 </head>
 <body class="results-body">
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+    </script>
     <nav class="top-nav">
         <div class="logo"><a href="index.html">Terminy<b>NFZ</b></a></div>
         <div class="nav-links">
@@ -113,11 +118,13 @@
     </main>
 
     <button id="theme-toggle">🌙</button>
+
+    <footer id="footer">
+        <p>Projekt grupy Syntax Error Crew 2026</p>
+        <p>Dane pochodzą z API: <a href="https://api.nfz.gov.pl/" target="_blank">api.nfz.gov.pl</a></p>
+        <p><a href="mailto:filologiapjn2024@gmail.com?subject=Zgłoszenie-TerminyNFZ" class="mailto-link">Zgłoś uwagę</a></p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
-<footer id="footer">
-    <p>Projekt grupy Syntax Error Crew 2026</p>
-    <p>Dane pochodzą z API: <a href="https://api.nfz.gov.pl/" target="_blank">api.nfz.gov.pl</a></p>
-    <p><a href="mailto:filologiapjn2024@gmail.com?subject=Zgłoszenie-TerminyNFZ" class="mailto-link">Zgłoś uwagę</a></p>
-</footer>
 </html>

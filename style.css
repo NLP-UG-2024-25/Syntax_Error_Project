@@ -20,19 +20,28 @@
 body {
   background: linear-gradient(180deg, var(--bg-gradient-top) 0%, var(--bg-gradient-bottom) 100%);
   min-height: 100vh;
-  padding: 20px;
+  
+  /* Włączamy Flexbox dla całego okna przeglądarki */
+  display: flex;         
+  flex-direction: column;
+  
+  /* Zmieniamy dolny padding na 0, aby stopka idealnie dotykała krawędzi ekranu */
+  padding: 20px 20px 0 20px; 
+  box-sizing: border-box;
 }
 
 .home-page {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   position: relative;
+  /* USUNIĘTO justify-content: center; - dzięki temu zawartość nie blokuje stopki */
 }
 
 .results-body {
-  display: block;
+  /* Zmieniamy z display: block na flex, aby strona wyników też obsługiściła dół */
+  display: flex;         
+  flex-direction: column;
   padding-top: 0;
 }
 
@@ -413,16 +422,22 @@ body.dark {
 }
 
 #theme-toggle {
-  position: fixed;        /* 🔥 przyklejony do ekranu */
-  bottom: 25px;           /* odstęp od dołu */
-  right: 25px;            /* odstęp od prawej */
+  position: relative; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  margin-top: auto; 
+  margin-bottom: 20px; 
+  margin-left: 0;
+  margin-right: 0;
+
+  align-self: flex-end; 
 
   width: 60px;
   height: 60px;
-  border-radius: 50%;     /* kółko */
-
-  font-size: 1.5rem;      /* większa ikonka */
-  
+  border-radius: 50%;
+  font-size: 1.5rem;
   border: none;
   cursor: pointer;
 
@@ -431,10 +446,6 @@ body.dark {
 
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   transition: all 0.3s ease;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 #theme-toggle:hover {
@@ -460,15 +471,14 @@ body.dark .priority-option input:checked + label {
 }
 
 footer {
-  width: 100vw;                       /* 100% szerokości całego okna przeglądarki */
-  margin-left: calc(-50vw + 50%);     /* Magiczna reguła ignorująca marginesy pojemnika */
+  width: 100vw;                       
+  margin-left: calc(-50vw + 50%);     
   background-color: #526cb4; 
   color: #ffffff;            
   text-align: center;        
   padding: 40px 20px;        
   box-sizing: border-box; 
-  margin-top: 100px;
-   margin-bottom: calc(-50vw + 50%);    
+  margin-top: 20px;
 }
 
 .mailto-link {
@@ -479,4 +489,243 @@ footer {
 .mailto-link:hover {
   color: #0e2a53;
   text-decoration: none;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.suggestions-box {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+
+  background: var(--input-bg);
+
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+  max-height: 240px;
+  overflow-y: auto;
+
+  z-index: 1000;
+  display: none;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.suggestion-item {
+  padding: 12px 14px;
+
+  cursor: pointer;
+
+  color: var(--text-dark);
+
+  font-size: 0.95rem;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.suggestion-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.suggestion-item + .suggestion-item {
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* DARK MODE */
+
+body.dark .suggestions-box {
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+body.dark .suggestion-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+body.dark .suggestion-item + .suggestion-item {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+body.dark .form-input,
+body.dark .form-select,
+body.dark .filters-panel input,
+body.dark .filters-panel select {
+  background: rgba(15, 23, 42, 0.9);
+  color: #f1f5f9;
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.3),
+    0 0 0 transparent;
+}
+
+body.dark input::placeholder {
+  color: #94a3b8;
+}
+
+body.dark .form-input:focus,
+body.dark .form-select:focus,
+body.dark .filters-panel input:focus,
+body.dark .filters-panel select:focus {
+  background: #0f172a;
+
+  border-color: rgba(59,130,246,0.5);
+
+  box-shadow:
+    0 0 0 4px rgba(59,130,246,0.18);
+}
+
+body.dark .filters-panel {
+  background: rgba(15, 23, 42, 0.72);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25);
+}
+
+body.dark .filters-panel h2,
+body.dark .filters-panel label {
+  color: #f1f5f9;
+}
+
+body.dark .results-header {
+  background: rgba(15, 23, 42, 0.72);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.2);
+}
+
+body.dark .result-card {
+  background: rgba(15, 23, 42, 0.82);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  color: #e2e8f0;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.3);
+}
+
+body.dark .result-card h3 {
+  color: #f8fafc;
+}
+
+body.dark .result-card p {
+  color: #cbd5e1;
+}
+
+body.dark .term-box {
+  background: rgba(30, 41, 59, 0.9);
+
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+body.dark .term-box span {
+  color: #94a3b8;
+}
+
+body.dark .term-box strong {
+  color: #f8fafc;
+}
+
+body.dark .wait-info,
+body.dark .phone-info,
+body.dark .benefit-label,
+body.dark .loading-msg {
+  color: #94a3b8 !important;
+}
+
+body.dark .pagination-btn {
+  background: #2563eb;
+}
+
+body.dark .pagination-btn:hover {
+  background: #3b82f6;
+}
+
+body.dark .pagination-dots {
+  color: #94a3b8;
+}
+
+body.dark .reserve-btn,
+body.dark .change-search-btn,
+body.dark #apply-filters {
+  background: #2563eb;
+}
+
+body.dark .reserve-btn:hover,
+body.dark .change-search-btn:hover,
+body.dark #apply-filters:hover {
+  background: #3b82f6;
+}
+
+body.dark .nav-links a,
+body.dark .logo,
+body.dark .logo a {
+  color: #f1f5f9;
+}
+
+body.dark footer {
+  background: #0f172a;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+body.dark .suggestions-box {
+  background: rgba(15, 23, 42, 0.96);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.35);
+}
+
+body.dark .suggestion-item {
+  color: #f1f5f9;
+}
+
+body.dark .suggestion-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+body.dark ::-webkit-scrollbar {
+  width: 10px;
+}
+
+body.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+body.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+}
+
+body.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+@media (max-width: 900px) {
+  #theme-toggle {
+    margin-top: 50px; 
+  }
 }
