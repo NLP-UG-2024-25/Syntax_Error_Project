@@ -364,7 +364,6 @@ function renderCards(data, grid) {
         ? `<p class="wait-info">Śr. oczekiwanie: <strong>${waitDays} dni</strong></p>`
         : '';
     const phoneStr = phone ? `<p class="phone-info">📞 ${phone}</p>` : '';
-    const safeName = escHtml(name).replace(/'/g, "\\'");
 
     const card = document.createElement('article');
     card.className = 'result-card';
@@ -378,9 +377,6 @@ function renderCards(data, grid) {
       </div>
       ${waitStr}
       <p class="benefit-label">${escHtml(benefit)}</p>
-      <button class="reserve-btn" onclick="alert('Szczegóły: ${safeName}')">
-        Zobacz więcej
-      </button>
     `;
 
     grid.appendChild(card);
@@ -458,4 +454,103 @@ function escHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// =====================
+// AUTOCOMPLETE SPECJALISTÓW
+// =====================
+const benefitInput = document.getElementById('benefit-input');
+const suggestionsBox = document.getElementById('suggestions-box');
+let autocompleteTimeout = null;
+
+// Pobieranie sugestii z API
+async function fetchBenefitSuggestions(query) {
+  if (!query || query.length < 2) {
+    hideSuggestions();
+    return;
+  }
+
+  try {
+    const url = new URL('https://api.nfz.gov.pl/app-itl-api/queues');
+    url.searchParams.set('benefit', query);
+    url.searchParams.set('limit', 10);
+    url.searchParams.set('page', 1);
+    url.searchParams.set('format', 'json');
+
+    const res = await fetch(url.toString());
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const json = await res.json();
+    if (!json.data) {
+      hideSuggestions();
+      return;
+    }
+
+    // Pobieramy unikalne nazwy świadczeń
+    const benefits = [
+      ...new Set(
+        json.data
+          .map(item => item.attributes?.benefit)
+          .filter(Boolean)
+      )
+    ];
+
+    renderSuggestions(benefits);
+  } catch (err) {
+    console.error('Błąd pobierania sugestii:', err);
+    hideSuggestions();
+  }
+}
+
+// Renderowanie listy sugestii
+function renderSuggestions(items) {
+  if (!suggestionsBox) return;
+  suggestionsBox.innerHTML = '';
+
+  if (!items.length) {
+    hideSuggestions();
+    return;
+  }
+
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'suggestion-item';
+    div.textContent = item;
+
+    div.addEventListener('click', () => {
+      if (benefitInput) benefitInput.value = item;
+      hideSuggestions();
+    });
+
+    suggestionsBox.appendChild(div);
+  });
+
+  suggestionsBox.style.display = 'block';
+}
+
+// Ukrywanie sugestii
+function hideSuggestions() {
+  if (!suggestionsBox) return;
+  suggestionsBox.style.display = 'none';
+  suggestionsBox.innerHTML = '';
+}
+
+// Nasłuchiwanie wpisywania (tylko jeśli element istnieje na stronie)
+if (benefitInput) {
+  benefitInput.addEventListener('input', e => {
+    const query = e.target.value.trim();
+    clearTimeout(autocompleteTimeout);
+
+    // Debounce
+    autocompleteTimeout = setTimeout(() => {
+      fetchBenefitSuggestions(query);
+    }, 300);
+  });
+
+  // Zamknięcie po kliknięciu poza obszar
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.autocomplete-wrapper')) {
+      hideSuggestions();
+    }
+  });
 }
