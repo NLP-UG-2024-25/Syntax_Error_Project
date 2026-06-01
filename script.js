@@ -459,8 +459,9 @@ function escHtml(str) {
 // =====================
 // AUTOCOMPLETE SPECJALISTÓW
 // =====================
-const benefitInput = document.getElementById('benefit-input');
-const suggestionsBox = document.getElementById('suggestions-box');
+// Skrypt sprawdzi najpierw ID ze strony głównej, a jeśli go nie znajdzie – pobierze ID z filtrów
+const benefitInput = document.getElementById('benefit-input') || document.getElementById('filter-benefit');
+const suggestionsBox = document.getElementById('suggestions-box') || document.getElementById('filter-suggestions-box');
 let autocompleteTimeout = null;
 
 // Pobieranie sugestii z API
