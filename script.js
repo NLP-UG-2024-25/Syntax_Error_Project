@@ -365,7 +365,6 @@ function renderCards(data, grid) {
         ? `<p class="wait-info">Śr. oczekiwanie: <strong>${waitDays} dni</strong></p>`
         : '';
     const phoneStr = phone ? `<p class="phone-info">📞 ${phone}</p>` : '';
-    const safeName = escHtml(name).replace(/'/g, "\\'");
 
     const card = document.createElement('article');
     card.className = 'result-card';
@@ -379,9 +378,6 @@ function renderCards(data, grid) {
       </div>
       ${waitStr}
       <p class="benefit-label">${escHtml(benefit)}</p>
-      <button class="reserve-btn" onclick="alert('Szczegóły: ${safeName}')">
-        Zobacz więcej
-      </button>
     `;
 
     grid.appendChild(card);
@@ -462,16 +458,14 @@ function escHtml(str) {
 }
 
 // =====================
-// AUTOCOMPLETE SPECJALISTÓW
+// AUTOCOMPLETE SPECJALISTÓW (WERSJA UNIWERSALNA)
 // =====================
-const benefitInput = document.getElementById('benefit-input');
-const suggestionsBox = document.getElementById('suggestions-box');
 let autocompleteTimeout = null;
 
-// Pobieranie sugestii z API
-async function fetchBenefitSuggestions(query) {
+// Uniwersalne pobieranie sugestii z API dla wskazanego inputu i boksu
+async function fetchBenefitSuggestions(query, input, box) {
   if (!query || query.length < 2) {
-    hideSuggestions();
+    hideSuggestions(box);
     return;
   }
 
@@ -487,7 +481,7 @@ async function fetchBenefitSuggestions(query) {
 
     const json = await res.json();
     if (!json.data) {
-      hideSuggestions();
+      hideSuggestions(box);
       return;
     }
 
@@ -500,20 +494,20 @@ async function fetchBenefitSuggestions(query) {
       )
     ];
 
-    renderSuggestions(benefits);
+    renderSuggestions(benefits, input, box);
   } catch (err) {
     console.error('Błąd pobierania sugestii:', err);
-    hideSuggestions();
+    hideSuggestions(box);
   }
 }
 
-// Renderowanie listy sugestii
-function renderSuggestions(items) {
-  if (!suggestionsBox) return;
-  suggestionsBox.innerHTML = '';
+// Uniwersalne renderowanie listy sugestii
+function renderSuggestions(items, input, box) {
+  if (!box) return;
+  box.innerHTML = '';
 
   if (!items.length) {
-    hideSuggestions();
+    hideSuggestions(box);
     return;
   }
 
@@ -523,39 +517,49 @@ function renderSuggestions(items) {
     div.textContent = item;
 
     div.addEventListener('click', () => {
-      if (benefitInput) benefitInput.value = item;
-      hideSuggestions();
+      if (input) input.value = item;
+      hideSuggestions(box);
     });
 
-    suggestionsBox.appendChild(div);
+    box.appendChild(div);
   });
 
-  suggestionsBox.style.display = 'block';
+  box.style.display = 'block';
 }
 
-// Ukrywanie sugestii
-function hideSuggestions() {
-  if (!suggestionsBox) return;
-  suggestionsBox.style.display = 'none';
-  suggestionsBox.innerHTML = '';
+// Uniwersalne ukrywanie wskazanego boksu
+function hideSuggestions(box) {
+  if (!box) return;
+  box.style.display = 'none';
+  box.innerHTML = '';
 }
 
-// Nasłuchiwanie wpisywania (tylko jeśli element istnieje na stronie)
-if (benefitInput) {
-  benefitInput.addEventListener('input', e => {
+// Funkcja inicjalizująca parę: pole tekstowe + boks podpowiedzi
+function initAutocomplete(inputId, boxId) {
+  const input = document.getElementById(inputId);
+  const box = document.getElementById(boxId);
+
+  if (!input || !box) return; // Jeśli nie ma elementów na danej stronie, przerywamy bez błędów
+
+  input.addEventListener('input', e => {
     const query = e.target.value.trim();
     clearTimeout(autocompleteTimeout);
 
     // Debounce
     autocompleteTimeout = setTimeout(() => {
-      fetchBenefitSuggestions(query);
+      fetchBenefitSuggestions(query, input, box);
     }, 300);
   });
-
-  // Zamknięcie po kliknięciu poza obszar
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.autocomplete-wrapper')) {
-      hideSuggestions();
-    }
-  });
 }
+
+// AKTYWACJA PODPOWIEDZI DLA OBU STRON
+initAutocomplete('benefit-input', 'suggestions-box');         // Strona główna
+initAutocomplete('filter-benefit', 'filter-suggestions-box');   // Strona z wynikami
+
+// Globalne zamykanie wszystkich otwartych boksów po kliknięciu poza wyszukiwarkami
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrapper')) {
+    const allBoxes = document.querySelectorAll('.suggestions-box');
+    allBoxes.forEach(box => hideSuggestions(box));
+  }
+});

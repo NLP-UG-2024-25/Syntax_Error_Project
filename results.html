@@ -95,8 +95,14 @@
                     <option value="zachodniopomorskie">Zachodniopomorskie</option>
                 </select>
 
+                <!-- <label for="filter-benefit">Specjalista / świadczenie</label>
+                <input type="text" id="filter-benefit" placeholder="np. kardiolog"> -->
+
                 <label for="filter-benefit">Specjalista / świadczenie</label>
-                <input type="text" id="filter-benefit" placeholder="np. kardiolog">
+                    <div class="autocomplete-wrapper">
+                    <input type="text" id="filter-benefit" placeholder="np. kardiolog" autocomplete="off">
+                    <div id="filter-suggestions-box" class="suggestions-box"></div>
+                </div>
 
                 <label for="filter-city">Miejscowość</label>
                 <input type="text" id="filter-city" placeholder="np. Warszawa">
