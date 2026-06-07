@@ -37,6 +37,51 @@ const PROVINCE_CODES = {
   zachodniopomorskie: '16'
 };
 
+const API_BASE_URL = 'https://api.nfz.gov.pl/app-itl-api';
+const API_MIN_DELAY_MS = 1200;
+const API_CACHE_TTL_MS = 5 * 60 * 1000;
+const apiCache = new Map();
+let lastApiRequestAt = 0;
+let activeQueuesRequestId = 0;
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getCachedJson(url) {
+  const cached = apiCache.get(url);
+  if (!cached) return null;
+
+  if (Date.now() - cached.createdAt > API_CACHE_TTL_MS) {
+    apiCache.delete(url);
+    return null;
+  }
+
+  return cached.data;
+}
+
+async function fetchNfzJson(url) {
+  const urlString = url.toString();
+  const cached = getCachedJson(urlString);
+  if (cached) return cached;
+
+  const waitMs = Math.max(0, API_MIN_DELAY_MS - (Date.now() - lastApiRequestAt));
+  if (waitMs) await sleep(waitMs);
+
+  lastApiRequestAt = Date.now();
+  const res = await fetch(urlString, { headers: { Accept: 'application/json' } });
+
+  if (res.status === 429) {
+    throw new Error('API NFZ chwilowo blokuje zbyt czeste zapytania. Odczekaj kilkanascie sekund i sprobuj ponownie.');
+  }
+
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+  const json = await res.json();
+  apiCache.set(urlString, { createdAt: Date.now(), data: json });
+  return json;
+}
+
 // =====================
 //  STRONA GŁÓWNA  (index.html)
 // =====================
@@ -264,11 +309,14 @@ async function fetchQueues(params, page = 1) {
   const grid = document.querySelector('.results-grid');
   if (!grid) return;
 
+  const requestId = ++activeQueuesRequestId;
+  const applyBtn = document.getElementById('apply-filters');
+  if (applyBtn) applyBtn.disabled = true;
   grid.innerHTML = '<p class="loading-msg">Wyszukiwanie terminów...</p>';
   clearPagination();
 
   const provinceCode = PROVINCE_CODES[params.province] || params.province;
-  const url = new URL('https://api.nfz.gov.pl/app-itl-api/queues');
+  const url = new URL(`${API_BASE_URL}/queues`);
 
   // Ustawianie parametrów API
   url.searchParams.set('province', provinceCode);
@@ -284,10 +332,9 @@ async function fetchQueues(params, page = 1) {
   }
 
   try {
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await fetchNfzJson(url);
+    if (requestId !== activeQueuesRequestId) return;
 
-    const json = await res.json();
     if (json.errors) {
       showError(`API zwróciło błąd: ${json.errors[0]['errorr-reason']}`);
       return;
@@ -333,7 +380,12 @@ async function fetchQueues(params, page = 1) {
     renderCards(sortedData, grid);
     renderPagination(json.meta, params);
   } catch (err) {
+    if (requestId !== activeQueuesRequestId) return;
     showError(`Nie udało się pobrać wyników. Sprawdź połączenie z internetem.<br><small>${err.message}</small>`);
+  } finally {
+    if (requestId === activeQueuesRequestId && applyBtn) {
+      applyBtn.disabled = false;
+    }
   }
 }
 
@@ -472,16 +524,13 @@ async function fetchBenefitSuggestions(query) {
   }
 
   try {
-    const url = new URL('https://api.nfz.gov.pl/app-itl-api/queues');
-    url.searchParams.set('benefit', query);
+    const url = new URL(`${API_BASE_URL}/benefits`);
+    url.searchParams.set('name', query);
     url.searchParams.set('limit', 10);
     url.searchParams.set('page', 1);
     url.searchParams.set('format', 'json');
 
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const json = await res.json();
+    const json = await fetchNfzJson(url);
     if (!json.data) {
       hideSuggestions();
       return;
@@ -491,7 +540,7 @@ async function fetchBenefitSuggestions(query) {
     const benefits = [
       ...new Set(
         json.data
-          .map(item => item.attributes?.benefit)
+          .map(item => typeof item === 'string' ? item : item.attributes?.name || item.attributes?.benefit)
           .filter(Boolean)
       )
     ];
@@ -545,7 +594,7 @@ if (benefitInput) {
     // Debounce
     autocompleteTimeout = setTimeout(() => {
       fetchBenefitSuggestions(query);
-    }, 300);
+    }, 700);
   });
 
   // Zamknięcie po kliknięciu poza obszar
